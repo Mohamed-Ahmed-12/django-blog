@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="row my-3 rounded p-1 ">
+    <h1 class="text-danger" style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ;">{{ blog.title }}</h1>
+    <h6 class="text-muted"># {{ blog.category }}</h6>
+    <h5 class="bi-person">Author : {{ blog.user }}</h5>
+    <h5>Published in : {{ blog.created_at }}</h5>
+</div>
+{% if blog.image %}
+<img src="{{ blog.image.url }}" alt="" class="img-fluid my-3 w-100" draggable="false">
+{% endif %}
+<div class="row">
+    <div class="col">
+        <p>{{ blog.desc }}</p>
+    </div>
+    <div class="row my-3">
+        {% for tag in blog.tags.all %}
+        <h6 class="col-auto fw-bold mx-2 text-white bg-primary rounded p-2">{{ tag }}</h6>
+        {% endfor %}
+    </div>
+    
+    {% if request.user.id != blog.user.id %}
+    <form action="{% url 'add_comment' slug=blog.slug %}" method="post" class="mx-3 p-3">
+        {% csrf_token %}
+        <input type="text" name="comment" class="w-100 p-2 text-dark fw-bold" placeholder="Add Your Comment Here">
+        <input type="text" name="blogid" value="{{blog.id}}" class="d-none">
+        <input type="text" name="userid" value="{{request.user.id}}" class="d-none">
+        <input type="submit" class="d-none">
+    </form>
+    {% endif %}
+    {% if blog.blogcomment.all %}
+    <h4 class="text-dark fw-bold">Comments</h4>
+    <div class="">
+        <div class="row m-3 border p-3"
+            style="background-image: linear-gradient(180deg,#fff 4.32%,rgba(255,255,255,0) 100%),linear-gradient(270deg,rgba(0,255,253,.2) 0,rgba(236,0,255,.2) 51.26%,rgba(255,103,0,.2) 100%);">
+            {% for c in blog.blogcomment.all %}
+            <div class="row">
+                <div class="col-1 justify-content-center">
+                    <img src="{% static 'img/index.png' %}" alt="" class="rounded-circle border border-primary" height="45px"
+                        draggable="false">
+                    <p style="font-family:'Segoe UI', Tahoma, Geneva, Verdana, sans-serif" class="fw-bold">{{ c.user }}</p>
+                </div>
+                <div class="col-auto rounded text-white p-2" style="background-color:#362d59; height:fit-content ;">{{ c }}</div>
+            </div>
+            {% for sub in c.subcomment.all %}
+            <div class="row ms-4 my-1">
+                <div class="col-1">
+                    <img src="{% static 'img/index3.png' %}" alt="" class="rounded-circle border border-secondary" height="45px"
+                        draggable="false">
+                    <p style="font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif ;">{{ sub.user }}</p>
+                </div>
+                <div class="col-auto rounded bg-white border p-2" style="height:fit-content ;">{{ sub }}</div>
+            </div>
+            {% endfor %}
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<div class="row my-3 bg-light rounded p-4" id="head">
+  <h1 class="text-danger" style="font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif ;">Hello World !</h1>
+  <form action="{% url 'search' %}"  method="GET" class="form my-3">
+      <input type="search" name="searchtxt" id="search-input" class="form-control" placeholder="Search About Blog" style="font-family: sans-serif ;">
+      <input type="submit" value="" class="form-control" hidden>
+  </form>
+  <div class="row ">
+    <a href="{% url 'index' %}" class="col-auto text-decoration-underline fw-bold text-white">Home</a>
+    <a href="{% url 'create_blog' %}" class="col-auto text-decoration-underline fw-bold text-white">Create Blog</a>
+  </div>
+</div>
+
+{% if cate %}
+<div class="row my-4 g-3">
+  <h3 class="fw-bold" style="color: #362d59">Categories</h3>
+  {% for c in cate %}
+  <div class="col-auto">
+    <div class="rounded p-2">
+      # <a href="{% url 'by_category' c %}">{{ c }}</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+<div class="row g-2">
+  {% for i in blogs %}
+  <div class="col-6">
+    <div class="border border-3 rounded p-3">
+      <h4 class="fw-bold text-primary my-3">
+        {{ forloop.counter }} . <a href="{% url 'blog' i.slug %}">{{ i.title }}</a>
+      </h4>
+      <h5 class="text-muted">#{{ i.category }}</h5>
+      <p class="text-truncate">{{ i.desc|safe|truncatewords:150 }}</p>
+      <div class="row">
+        {% for tag in i.tags.all %}
+        <h6 class="col-auto fw-bold mx-2 text-white bg-primary rounded p-2">
+          <a href="{% url 'by_tag' tag %}" class="text-white text-decoration-none">{{ tag }}</a>
+        </h6>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+
+{% if tags %}
+<div class="row my-4 g-3 d-flex justify-content-center border-top border-primary">
+  <h3 class="fw-bold" style="color: #362d59">Tags</h3>
+  {% for tag in tags %}
+  <div class="col-auto">
+    <div>
+      <a href="{% url 'by_tag' tag %}" class="btn btn-outline-primary text-decoration-none">{{ tag }}</a>
+    </div>
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{% endblock %}
