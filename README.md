@@ -1,4 +1,4 @@
-# blog_django
+# Blog Project
 Simple Blog with Django Framework
 
 # Home page
